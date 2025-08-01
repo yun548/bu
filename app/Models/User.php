@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
-use Wave\User as WaveUser;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Wave\Traits\HasProfileKeyValues;
+use Wave\User as WaveUser;
 
 class User extends WaveUser
 {
-    use Notifiable, HasProfileKeyValues;
+    use HasProfileKeyValues, Notifiable;
 
     public $guard_name = 'web';
 
@@ -48,12 +48,14 @@ class User extends WaveUser
      */
     public function getFullNameAttribute()
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
-    /**
-     * Automatically set the name field when first_name or last_name changes
-     */
+    public function setPhoneAttribute($value)
+    {
+        $this->attributes['phone'] = $value;
+    }
+
     public function setFirstNameAttribute($value)
     {
         $this->attributes['first_name'] = $value;
@@ -74,7 +76,7 @@ class User extends WaveUser
         if (isset($this->attributes['first_name']) || isset($this->attributes['last_name'])) {
             $firstName = $this->attributes['first_name'] ?? '';
             $lastName = $this->attributes['last_name'] ?? '';
-            $this->attributes['name'] = trim($firstName . ' ' . $lastName);
+            $this->attributes['name'] = trim($firstName.' '.$lastName);
         }
     }
 
@@ -82,32 +84,74 @@ class User extends WaveUser
     {
         parent::boot();
 
-        // Listen for the creating event of the model
-        static::creating(function ($user) {
-            // Auto-generate name from first_name and last_name if not provided
-            if (empty($user->name) && ($user->first_name || $user->last_name)) {
-                $user->name = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
-            }
+        static::saving(function ($user) {
+            $animals = [
+                'lapin', 'aigle', 'girafe', 'panda', 'koala', 'pingouin',
+                'renard', 'loutre', 'paon', 'hibou', 'faon', 'manchot'
+            ];
 
-            // Check if the username attribute is empty
-            if (empty($user->username)) {
-                // Use the name to generate a slugified username
-                $username = Str::slug($user->name, '');
+            if (empty($user->first_name) && empty($user->last_name)) {
+                $animal = $animals[array_rand($animals)];
+                $username = $animal;
                 $i = 1;
-                while (self::where('username', $username)->exists()) {
-                    $username = Str::slug($user->name, '') . $i;
+                while (self::where('username', $username)->where('id', '!=', $user->id)->exists()) {
+                    $username = $animal . $i;
                     $i++;
                 }
                 $user->username = $username;
             }
         });
 
-        // Listen for the created event of the model
         static::created(function ($user) {
-            // Remove all roles
             $user->syncRoles([]);
-            // Assign the default role
-            $user->assignRole( config('wave.default_user_role', 'registered') );
+            $user->assignRole(config('wave.default_user_role', 'registered'));
         });
+    }
+
+
+    public function isComplete(): bool
+    {
+        return !empty($this->first_name) && !empty($this->last_name) && !empty($this->phone);
+    }
+
+    public function stores()
+    {
+        return $this->belongsToMany(Store::class)->withPivot('role');
+    }
+    
+    public function isOwnerOfStore($store): bool
+    {
+        $storeId = $store instanceof Store ? $store->id : $store;
+        return $this->stores()
+            ->where('store_id', $storeId)
+            ->wherePivot('role', 'owner')
+            ->exists();
+    }
+
+    public function isAccountantOfStore($store): bool
+    {
+        $storeId = $store instanceof Store ? $store->id : $store;
+        return $this->stores()
+            ->where('store_id', $storeId)
+            ->wherePivot('role', 'accountant')
+            ->exists();
+    }
+
+    public function isEmployeeOfStore($store): bool
+    {
+        $storeId = $store instanceof Store ? $store->id : $store;
+        return $this->stores()
+            ->where('store_id', $storeId)
+            ->wherePivot('role', 'employee')
+            ->exists();
+    }
+
+    public function hasStore(): bool
+    {
+        return $this->stores()
+            ->wherePivot('role', 'owner')
+            ->orWherePivot('role', 'accountant')
+            ->orWherePivot('role', 'employee')
+            ->exists();
     }
 }

@@ -23,7 +23,7 @@
         private function loadFilesInCurrentFolder(){
             $this->files = $this->getFilesInDir($this->folder);
         }
-    
+
         public function storage($disk = false){
             // We want to get the class from the Storage facade, this is probably Illuminate\Filesystem\FilesystemManager
             $storageClass = get_class(\Illuminate\Support\Facades\Storage::getFacadeRoot());
@@ -118,7 +118,7 @@
             $this->validate([
                 'upload' => 'image|max:1024', // 1MB Max
             ]);
-    
+
             $this->uploadFile = $this->upload->store('photos', 'public');
             $this->uploadFile = storage()->url($this->uploadFile);
         }
@@ -134,9 +134,9 @@
     @volt('media')
         <div class="flex justify-start items-start p-5 w-full h-full bg-white rounded-xl border border-zinc-100">
             <div class="w-full h-full">
-                <div x-data="{ 
-                        active: '', 
-                        files: @entangle('files'), 
+                <div x-data="{
+                        active: '',
+                        files: @entangle('files'),
                         storageURL: @entangle('storageURL'),
                         activeFileDrawer: true,
                         isActiveFile(file) {
@@ -149,7 +149,7 @@
                             return false;
                         }
                     }" class="flex flex-col justify-start items-center w-full h-full bg-white">
-                    
+
                     <header class="flex space-x-3 w-full">
                         <div class="flex overflow-hidden flex-shrink-0 rounded divide-x divide-gray-700">
                             <button class="flex relative items-center px-4 py-2 text-xs font-medium text-white bg-black hover:bg-gray-900">
@@ -203,7 +203,7 @@
                             </button>
                         </div>
                     </header>
-                    
+
                     <nav class="flex justify-between items-center py-2 w-full text-xs">
                         <ol role="list" class="flex items-center space-x-1">
                             <li>
@@ -214,8 +214,8 @@
                             @foreach($breadcrumbs as $breadcrumb)
                                 <li><svg class="flex-shrink-0 w-5 h-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z"></path></svg></li>
                                 <li>
-                                    <button 
-                                        wire:click="goToDirectory('{{ $breadcrumb->location }}')" 
+                                    <button
+                                        wire:click="goToDirectory('{{ $breadcrumb->location }}')"
                                         class="@if($loop->last) text-gray-400 @else text-gray-600 hover:text-gray-800 hover:bg-gray-100 focus:ring-2 focus:outline-none focus:ring-gray-100 @endif
                                             inline-flex items-center px-3 py-2 font-normal text-center  bg-white rounded-md">
                                         {{ $breadcrumb->display }}
@@ -231,15 +231,15 @@
                     </nav>
 
                     <div class="flex justify-start items-stretch space-x-10 w-full h-full">
-                        
+
                         <files class="flex w-full h-100">
                             <div class="overflow-hidden p-1 w-full h-full h-100">
-                                <ul 
+                                <ul
                                     :class="{ 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : activeFileDrawer, 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' : !activeFileDrawer }"
                                     class="grid gap-x-4 gap-y-8 sm:gap-x-6 xl:gap-x-8">
                                     <template x-for="file in files" :key="file.relative_path">
                                         <li class="relative aspect-video" x-on:click="active=file" x-on:dblclick="$wire.goToDirectory(file.relative_path)">
-                                            <div 
+                                            <div
                                                 :class="{ 'ring-indigo-500': isActiveFile(file), 'ring-gray-200' : !isActiveFile(file) }"
                                                 class="flex overflow-hidden justify-center items-center w-full rounded-lg ring-2 ring-offset-2 group aspect-video">
                                                 <template x-if="file.type == 'folder'">
@@ -253,12 +253,12 @@
                                                 <template x-if="!file.type.startsWith('image') && file.type != 'folder'">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-12 h-12"><path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625z" /><path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z" /></svg>
                                                 </template>
-                                            
+
                                                 <button type="button" class="absolute inset-0 focus:outline-none">
                                                     <span class="sr-only" x-text="file.name"></span>
                                                 </button>
                                             </div>
-                                            <p 
+                                            <p
                                                 :class="{ 'text-indigo-600': isActiveFile(file), 'text-neutral-700' : !isActiveFile(file) }"
                                             class="block mt-2 text-sm font-medium truncate pointer-events-none" x-text="file.name"></p>
                                             <p class="block text-sm font-medium text-gray-500 pointer-events-none">3.9 MB</p>
@@ -267,7 +267,7 @@
                                 </ul>
                             </div>
                         </files>
-                        
+
                         <active-file x-show="activeFileDrawer" class="relative flex-shrink-0 w-[17rem] h-full  bg-gray-50 rounded-md p-3">
                             <template x-if="!activeFileSelected()">
                                 <div class="flex justify-center items-center h-32 text-sm text-gray-500">
@@ -304,7 +304,7 @@
                         </active-file>
                     </div>
 
-                    {{-- <div click="save">Save</div> --}}
+                    {{-- <div click="save">Enregistrer</div> --}}
                     @if($uploadFile ?? false)
                         {{-- <div class="overflow-hidden max-w-xs rounded-xl">
                             <img src="{{ $uploadFile }}" />

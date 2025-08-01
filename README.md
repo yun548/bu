@@ -1,3 +1,9 @@
+## Database Migrations and Seed
+php artisan migrate
+php artisan db:seed
+
+
+
 <p align="center"><a href="https://devdojo.com/wave" target="_blank"><img src="https://cdn.devdojo.com/images/october2024/wave-logo.png" width="200"></a></p>
 
 <p align="center">

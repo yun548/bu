@@ -22,8 +22,8 @@ return [
         'couldnt_find_your_account' => 'Identifiants invalides',
     ],
     'register' => [
-        'page_title' => "S'enregistrer",
-        'headline' => "S'enregistrer",
+        'page_title' => 'Création de compte',
+        'headline' => 'Création de compte',
         'subheadline' => 'Register for your free account below.',
         'show_subheadline' => false,
         'name' => 'Nom',
@@ -36,7 +36,7 @@ return [
         'email_registration_disabled' => 'Email registration is currently disabled. Please use social login.',
     ],
     'verify' => [
-        'page_title' => 'Vérifiez votre adresse email',
+        'page_title' => 'Création de compte',
         'headline' => 'Vérifiez votre adresse email',
         'subheadline' => 'Before you can proceed you must verify your email.',
         'show_subheadline' => false,

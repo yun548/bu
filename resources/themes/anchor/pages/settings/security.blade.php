@@ -6,7 +6,7 @@
     use Filament\Forms\Contracts\HasForms;
     use Filament\Forms\Form;
     use Filament\Notifications\Notification;
-    
+
     middleware('auth');
     name('settings.security');
 
@@ -47,7 +47,7 @@
                 ])
                 ->statePath('data');
         }
-        
+
         public function save(): void
         {
             $state = $this->form->getState();
@@ -70,16 +70,16 @@
 ?>
 
 <x-layouts.app>
-    @volt('settings.security') 
+    @volt('settings.security')
         <div class="relative">
             <x-app.settings-layout
-                title="Security"
-                description="Update and change your current account password."
+                title="Sécurité"
+                description="Modifie le mot de passe de votre compte."
             >
                 <form wire:submit="save" class="w-full max-w-lg">
                     {{ $this->form }}
                     <div class="w-full pt-6 text-right">
-                        <x-button type="submit">Save</x-button>
+                        <x-button type="submit">Enregistrer</x-button>
                     </div>
                 </form>
 

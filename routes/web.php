@@ -12,6 +12,7 @@
 */
 
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt;
 use Wave\Facades\Wave;
 
 // Wave routes
